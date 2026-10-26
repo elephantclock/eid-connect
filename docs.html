@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EID Connect Developer Docs | Emirates ID Integration API &amp; SDK</title>
+  <meta name="description" content="Developer documentation for EID Connect: read UAE Emirates ID cards in web apps. Quickstart, Server-Sent Events protocol reference, security settings, JavaScript client, mock reader and examples." />
+  <link rel="canonical" href="https://elephantclock.github.io/eid-connect/docs.html" />
+  <meta property="og:title" content="EID Connect | Emirates ID Integration" />
+  <meta property="og:description" content="One reader. Web, mobile, kiosk. Read Emirates ID cards into any app in under a second." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "EID Connect",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Windows, Linux",
+    "description": "Emirates ID integration: reads UAE Emirates ID cards into web, mobile and kiosk apps.",
+    "publisher": { "@type": "Organization", "name": "ElephantClock Technology", "url": "https://www.elephantclock.ae" },
+    "areaServed": "AE"
+  }
+  </script>
+  <style>
+    :root {
+      --bg: #fbfaf7;
+      --surface: #ffffff;
+      --text: #17191c;
+      --muted: #5b6068;
+      --line: #e6e2d8;
+      --gold: #a8841f;
+      --gold-soft: #f6efd9;
+      --blue: #003366;
+      --code-bg: #f3f1ea;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0f1114;
+        --surface: #171a1e;
+        --text: #ebebea;
+        --muted: #a2a7ae;
+        --line: #2a2e34;
+        --gold: #d4af37;
+        --gold-soft: #2a2414;
+        --blue: #9cc0e8;
+        --code-bg: #1d2126;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0f1114; --surface: #171a1e; --text: #ebebea; --muted: #a2a7ae; --line: #2a2e34;
+      --gold: #d4af37; --gold-soft: #2a2414; --blue: #9cc0e8; --code-bg: #1d2126;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.65 Inter, system-ui, sans-serif; }
+    a { color: var(--blue); }
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+    nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+    nav .wrap { display: flex; align-items: center; gap: 20px; height: 56px; }
+    nav .brand { font-weight: 700; text-decoration: none; color: var(--text); margin-right: auto; }
+    nav .brand span { color: var(--gold); }
+    nav a.link { color: var(--muted); text-decoration: none; font-size: .92rem; }
+    nav a.link:hover { color: var(--text); }
+    .btn { display: inline-block; padding: 10px 18px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: .95rem; }
+    .btn-primary { background: var(--gold); color: #fff; }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .btn-ghost { border: 1px solid var(--line); color: var(--text); background: var(--surface); }
+    header.hero { padding: 72px 0 56px; }
+    .eyebrow { color: var(--gold); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; font-size: .8rem; }
+    h1 { font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.12; margin: 10px 0 16px; letter-spacing: -.02em; max-width: 760px; }
+    .lede { font-size: 1.15rem; color: var(--muted); max-width: 640px; margin: 0 0 28px; }
+    .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+    .flow { margin-top: 44px; display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 12px; align-items: center; }
+    .node { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+    .node b { display: block; }
+    .node small { color: var(--muted); }
+    .node.us { border-color: var(--gold); background: var(--gold-soft); }
+    .arrow { color: var(--muted); font-size: 1.3rem; }
+    @media (max-width: 720px) { .flow { grid-template-columns: 1fr; } .arrow { transform: rotate(90deg); justify-self: center; } nav a.link { display: none; } }
+    section { padding: 56px 0; border-top: 1px solid var(--line); }
+    h2 { font-size: 1.7rem; margin: 0 0 8px; letter-spacing: -.01em; }
+    h3 { font-size: 1.05rem; margin: 28px 0 8px; }
+    .section-lede { color: var(--muted); margin: 0 0 28px; max-width: 680px; }
+    .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+    .tile h3 { margin-top: 0; }
+    .tile p { margin: 0; color: var(--muted); font-size: .95rem; }
+    pre { background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px; padding: 16px; overflow-x: auto; font: 13.5px/1.6 'JetBrains Mono', ui-monospace, monospace; }
+    code { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .88em; }
+    p code, td code, li code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .93rem; }
+    th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 500; }
+    .note { border-left: 3px solid var(--gold); background: var(--gold-soft); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 20px 0; }
+    .pricing { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .plan { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; }
+    .plan.featured { border: 2px solid var(--gold); }
+    .plan h3 { margin: 0 0 4px; font-size: 1.2rem; }
+    .plan .price { font-size: 1.5rem; font-weight: 700; margin: 8px 0 12px; }
+    .plan ul { padding-left: 18px; margin: 0 0 20px; color: var(--muted); }
+    .cta-band { background: var(--blue); color: #fff; border-radius: 16px; padding: 36px 28px; display: flex; gap: 24px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    :root[data-theme="dark"] .cta-band, .cta-band { color: #fff; }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .cta-band { background: #0d2a47; } }
+    :root[data-theme="dark"] .cta-band { background: #0d2a47; }
+    .cta-band h2 { color: #fff; }
+    .cta-band p { margin: 0; opacity: .85; }
+    footer { padding: 32px 0 48px; color: var(--muted); font-size: .88rem; border-top: 1px solid var(--line); }
+  </style>
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="./">EID <span>Connect</span></a>
+    <a class="link" href="./">Overview</a>
+    <a class="link" href="#quickstart">Quickstart</a>
+    <a class="link" href="#protocol">Protocol</a>
+    <a class="link" href="#security">Security</a>
+    <a class="link" href="https://github.com/elephantclock/eid-connect-examples">Examples</a>
+    <a class="btn btn-primary" href="./#commercial">Get a licence</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Emirates ID Integration · UAE</div>
+    <h1>Read Emirates ID cards straight into your web, mobile and kiosk apps.</h1>
+    <p class="lede">A customer taps their card and your form fills in under a second, in English and Arabic, with photo. No re-typing, no browser plugins, no per-PC installer pain.</p>
+    <div class="ctas">
+      <a class="btn btn-primary" href="#commercial">Book a demo</a>
+      <a class="btn btn-ghost" href="#quickstart">Try it with no reader →</a>
+    </div>
+
+    <div class="flow" aria-label="How EID Connect works">
+      <div class="node"><b>Emirates ID reader</b><small>Any PC/SC smart-card or NFC reader</small></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="node us"><b>EID Connect service</b><small>Runs on the counter PC as a Windows service. Reads the chip.</small></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="node"><b>Your app</b><small>Web, mobile or kiosk. Gets a JSON event over local HTTP.</small></div>
+    </div>
+  </div>
+</header>
+
+<section id="use-cases">
+  <div class="wrap">
+    <h2>Built for UAE counters and kiosks</h2>
+    <p class="section-lede">Anywhere staff re-type Emirates ID details today.</p>
+    <div class="grid3">
+      <div class="tile"><h3>Typing centres</h3><p>Fill visa, residency and government forms from the card in one tap.</p></div>
+      <div class="tile"><h3>Clinics &amp; hospitals</h3><p>Register patients at reception using the Emirates ID as the patient key.</p></div>
+      <div class="tile"><h3>Hotels &amp; holiday homes</h3><p>Capture resident guests at check-in, ready for tourism and police reporting.</p></div>
+      <div class="tile"><h3>Real estate &amp; car rental</h3><p>Auto-fill tenancy and rental contracts with the correct legal name.</p></div>
+      <div class="tile"><h3>Visitor management</h3><p>Self check-in kiosks, badges, and access logs with masked IDs.</p></div>
+      <div class="tile"><h3>Age-restricted retail</h3><p>An allowed / not-allowed answer that stores nothing.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="quickstart">
+  <div class="wrap">
+    <h2>Quickstart</h2>
+    <p class="section-lede">Start building in two minutes. You don't need a reader: the mock bridge speaks the exact same protocol.</p>
+    <h3>1. Start a reader (or the mock)</h3>
+<pre>npx @elephantclock/eid-connect-mock
+# press c to send a synthetic Emirates ID card</pre>
+    <h3>2. Install the client</h3>
+<pre>npm install @elephantclock/eid-connect</pre>
+    <h3>3. Fill your form</h3>
+<pre>import { connect } from '@elephantclock/eid-connect';
+
+connect({
+  onCard: (card) =&gt; {
+    form.name.value       = card.nameEnglish;
+    form.nameArabic.value = card.nameArabic;
+    form.emiratesId.value = card.idNumber;
+    form.dob.value        = card.dateOfBirth;   // ISO yyyy-MM-dd
+    photo.src             = card.photoDataUrl;
+  },
+});</pre>
+    <p>React: <code>import { useEidReader } from '@elephantclock/eid-connect/react'</code>. More in the <a href="https://github.com/elephantclock/eid-connect-js">client library</a> and the <a href="https://github.com/elephantclock/eid-connect-examples">examples</a>.</p>
+  </div>
+</section>
+
+<section id="protocol">
+  <div class="wrap">
+    <h2>Protocol reference</h2>
+    <p class="section-lede">The service is a small local HTTP server. Any language that can read Server-Sent Events can integrate: JavaScript, C#, Python, Flutter, Java.</p>
+
+    <div class="table-wrap"><table>
+      <thead><tr><th>Endpoint</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET /events</code></td><td>SSE stream. Each message is <code>data: {json}</code> with a <code>type</code> field. A <code>: heartbeat</code> comment every 30 s keeps proxies open.</td></tr>
+        <tr><td><code>GET /status</code></td><td><code>{"status":"running","clients":1,"timestamp":"…"}</code>, for health checks.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Default address <code>http://localhost:8080</code>.</p>
+
+    <h3>Event: <code>connection</code></h3>
+<pre>{ "type": "connection", "status": "connected", "timestamp": "2026-10-26T10:15:02.114", "clientId": "1077432858" }</pre>
+
+    <h3>Event: <code>card_read</code></h3>
+<pre>{
+  "type": "card_read",
+  "timestamp": "2026-10-26T10:15:09.552",
+  "id": "784-0000-0000001-0",
+  "cardNumber": "000000001",
+  "cardSerialNumber": "0000000000000001",
+  "nfcUid": "0000000000000001",
+  "status": "SUCCESS",
+  "fullNameEnglish": "SAMPLE CARDHOLDER ONE",
+  "fullNameArabic": "حامل بطاقة تجريبي واحد",
+  "nationality": "United Arab Emirates",
+  "nationalityArabic": "الإمارات العربية المتحدة",
+  "gender": "M",
+  "dateOfBirth": "01/01/1990",
+  "issueDate": "01/01/2024",
+  "expiryDate": "01/01/2029",
+  "photo": "&lt;base64 image&gt;",
+  "photoSize": 18432,
+  "cardCount": 1,
+  "readerState": "CONNECTED"
+}</pre>
+    <p>Dates are typically <code>dd/MM/yyyy</code>. The client library converts them to ISO <code>yyyy-MM-dd</code>.</p>
+
+    <h3>Event: <code>nfc_card_read</code></h3>
+    <p>A non-Emirates-ID NFC tag (staff badge, membership card), or UID-only mode when a full read isn't available.</p>
+<pre>{ "type": "nfc_card_read", "timestamp": "…", "uid": "04A1B2C3", "cardType": "MIFARE_CLASSIC_1K", "sak": "0x08",
+  "readerType": "NFC", "readerState": "CONNECTED", "cardCount": 2 }</pre>
+    <p>UID-only reads also carry <code>"fallback": true</code>, <code>nfcUid</code>, <code>cardSerialNumber</code> and <code>readerName</code>.</p>
+
+    <h3>Event: <code>error</code></h3>
+<pre>{ "type": "error", "message": "Card data conversion failed", "timestamp": "…" }</pre>
+  </div>
+</section>
+
+<section id="security">
+  <div class="wrap">
+    <h2>Security &amp; privacy</h2>
+    <p class="section-lede">Emirates ID data is personal data under UAE PDPL. EID Connect listens on the local PC only, and you choose which apps may receive card data.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Setting</th><th>Default</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>EID_BIND_ADDRESS</code></td><td><code>127.0.0.1</code></td><td>Listens on this PC only. Set <code>0.0.0.0</code> only when tablets or kiosks on the LAN must connect, and firewall the port.</td></tr>
+        <tr><td><code>EID_ALLOWED_ORIGINS</code></td><td>unset = any origin, with a warning logged</td><td>Comma-separated list of the web app origins allowed to receive card data, e.g. <code>https://app.example.ae</code>. Every other website is refused. <strong>Always set this in production.</strong></td></tr>
+      </tbody>
+    </table></div>
+    <ul>
+      <li>Nothing is stored by the service. Data goes only to your app, on the local machine.</li>
+      <li>Works from HTTPS web apps: it supports Chrome's Private Network Access preflight.</li>
+      <li>Runs as a Windows service with auto-start, auto-restart and daily log rotation. Logs mask ID numbers.</li>
+      <li>Keep what you need and no more: the <a href="https://github.com/elephantclock/eid-connect-examples/tree/main/age-check">age-check example</a> stores nothing.</li>
+    </ul>
+    <div class="note"><strong>Offline read vs. online validation.</strong> EID Connect reads the card chip, for capture, auto-fill and onboarding. It doesn't check the card against government records. Online validation for regulated eKYC is a separate service. <a href="#commercial">Ask us about it.</a></div>
+  </div>
+</section>
+
+<section id="commercial">
+  <div class="wrap">
+    <h2>Licensing</h2>
+    <p class="section-lede">Free to learn with. Licensed for business.</p>
+    <div class="pricing">
+      <div class="plan">
+        <h3>Personal &amp; education</h3>
+        <div class="price">Free</div>
+        <ul>
+          <li>Client library, mock bridge and examples</li>
+          <li>Students, teachers, researchers, hobby projects</li>
+          <li>Charities, schools, public research and government bodies</li>
+          <li>PolyForm Noncommercial 1.0.0</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://github.com/elephantclock/eid-connect-js">Start on GitHub</a>
+      </div>
+      <div class="plan featured">
+        <h3>Commercial</h3>
+        <div class="price">Per site / per reader</div>
+        <ul>
+          <li><strong>EID Connect reader service</strong> for Windows</li>
+          <li>Commercial rights to all EID Connect code</li>
+          <li>Installation, reader recommendations, updates</li>
+          <li>Priority support, with an SLA available</li>
+          <li>Custom integrations: CRM, ERP, HMS, PMS</li>
+        </ul>
+        <a class="btn btn-primary" href="mailto:info@elephantclock.ae?subject=EID%20Connect%20commercial%20licence">Get a quote / free trial</a>
+      </div>
+    </div>
+
+    <div style="margin-top:36px" class="cta-band">
+      <div>
+        <h2>See it working with a real Emirates ID</h2>
+        <p>A 20-minute live demo in Abu Dhabi, Dubai or online.</p>
+      </div>
+      <div class="ctas">
+        <a class="btn btn-primary" href="https://wa.me/971507022916?text=Hi%2C%20I%27d%20like%20a%20demo%20of%20EID%20Connect">WhatsApp us</a>
+        <a class="btn btn-ghost" href="mailto:info@elephantclock.ae?subject=EID%20Connect%20demo">Email</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    EID Connect is built by <a href="https://www.elephantclock.ae">ElephantClock Technology</a>, World Trade Center, Abu Dhabi ·
+    <a href="https://www.elephantclock.ae/solutions/emirates-id-integration.html">Emirates ID Integration</a> ·
+    <a href="https://github.com/elephantclock/eid-connect-js">GitHub</a><br />
+    Not affiliated with or endorsed by the Federal Authority for Identity, Citizenship, Customs &amp; Port Security (ICP). All data shown on this site is synthetic.
+  </div>
+</footer>
+</body>
+</html>

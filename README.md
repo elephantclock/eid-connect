@@ -1,9 +1,9 @@
 # EID Connect: Emirates ID Integration for web, mobile & kiosk apps
 
 > **Using Emirates ID in your business?** Get the EID Connect reader service, a commercial licence and setup support.
-> **[Get a commercial licence or free trial →](./COMMERCIAL.md)** · [Book a demo on WhatsApp](https://wa.me/971507022916) · [info@elephantclock.tech](mailto:info@elephantclock.tech?subject=EID%20Connect)
+> **[Get a commercial licence or free trial →](./COMMERCIAL.md)** · [Book a demo on WhatsApp](https://wa.me/971507022916) · [info@elephantclock.ae](mailto:info@elephantclock.ae?subject=EID%20Connect)
 
-**📖 Docs: [elephantclock.github.io/eid-connect](https://elephantclock.github.io/eid-connect/)**
+**🌐 [elephantclock.github.io/eid-connect](https://elephantclock.github.io/eid-connect/)** · **📖 [Developer docs](https://elephantclock.github.io/eid-connect/docs.html)**
 
 EID Connect reads UAE Emirates ID cards into any app. A small service on the counter PC
 reads the card and streams it as JSON over local HTTP (Server-Sent Events), so web, mobile
@@ -15,7 +15,7 @@ and kiosk front-ends get the data in under a second.
 | [eid-connect-mock](https://github.com/elephantclock/eid-connect-mock) | Mock reader with synthetic cards (`npx @elephantclock/eid-connect-mock`) |
 | [eid-connect-examples](https://github.com/elephantclock/eid-connect-examples) | Form auto-fill, visitor kiosk, age check |
 
-This repository hosts the documentation site (GitHub Pages, served from `index.html`).
+This repository hosts the product site on GitHub Pages: `index.html` (overview and pricing) and `docs.html` (developer reference).
 
 ## Licence
 
